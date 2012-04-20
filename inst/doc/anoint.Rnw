@@ -1,0 +1,177 @@
+\documentclass{article}
+\usepackage{url,graphicx}
+\addtolength{\topmargin}{-0.5in}
+\addtolength{\textheight}{0.75in}
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\textwidth}{1in}
+%\VignetteIndexEntry{anoint package vignette}
+\usepackage{Sweave}
+\author{Stephanie Kovalchik and Ravi Varadhan}
+\title{Vignette for the \texttt{anoint} package}
+
+\begin{document}
+
+\maketitle
+
+This document gives a brief introduction to the main functions of the \texttt{anoint} package. The package provides a set of tools for the ``analysis of interactions'' to investigate consistency of treatment effect with data from a parallel-group clinical trial. 
+
+The examples will make use of a simulated clinical trial data set, motivated by the structure of the Studies of Left Ventricular Dysfunction Trial (SOLVD-T), a placebo-controlled trial of the angiotensin-converting-enzyme inhibitor enalapril for patients with congestive heart failure (Yusuf 1991). The simulated data set is included with the package.
+
+\subsection*{Creating an \texttt{anoint} object}
+
+\subsubsection*{Specifying the prognostic factors}
+
+The fundamental object of the package is an \texttt{anoint} object. This is what specifies family of model to be fit in all regression methods, the candidate prognostic factors for investigating effect modification, and whether a selection procedure is used for identifying prognostic factors.
+
+In the following, we create an \texttt{anoint} object for the mock SOLVD-T data, specifying age, pulse, lower ejection fraction, cardiothoracic ratio, and sodium as prognostic factors. The regression model for all the \texttt{anoint} regression methods will be a logistic model on the outcome of time to hospitalization or death within two years of study entry.
+
+<<>>=
+library(anoint)
+data(simsolvd)
+
+simsolvd$event <- 1-simsolvd$censor
+
+obj <- anoint(event~(age+beat+lvef+cardratio+sodium)*trt,
+                 family = "binomial", data = simsolvd)
+
+obj
+@ 
+
+The option family can be any one of the canonical models in the GLM family or a Cox regression model which is specified by setting \texttt{family} to `coxph'.
+
+\subsubsection*{Model-based prognostic selection}
+
+If we were uncertain whether all of the factors were prognostic, we could perform a prognostic selection step prior to any interaction testing. When the \texttt{anoint} option \texttt{select} is set to \texttt{TRUE}, a lasso variable selection is performed on the control data in order to identify factors that have a marginal influence on the outcome. The default settings use a ten-fold cross-validation to estimate the penalty parameter $\lambda$.
+
+For example, suppose we were uncertain about the importance of the variables \texttt{noise} and \texttt{sodium}. We could require all variables known to be prognostic to be selected by setting their penalty factor in the lasso \texttt{glmnet} call to zero.
+
+<<>>=
+obj <- anoint(event~(age+beat+lvef+cardratio+sodium+noise)*trt,
+                 family = "binomial", data = simsolvd, select=TRUE,
+                 penalty.factor=c(rep(0,5),1,1))
+
+obj
+@ 
+
+Note that the first term of the \texttt{penalty.factor} vector is always an intercept for GLM and Cox models. In this case, \texttt{noise} was dropped from the set of prognostic factors based on the empirical evidence in the control group.
+
+\subsection*{PR-plot}
+
+Before formal testing of multiple interactions, we might be interested to see whether a proportional interaction model is reasonable. The proportional interaction model (PIM) postulates a constant effect modification on a score of the prognostic treatment-response factors. The score is linear for the specified regression model. To inspect proportional interactions, we use the PR-plot, for `proportional response'. This bins the outcomes of the logistic model based on the baseline prognostic score then computes the treatment effect within the decile groups. If the treatment effects are linear with respect to the prognostic score, this would be evidence of proportional interactions.
+
+To generate the PR-plot, apply the \texttt{plot} method of the \texttt{anoint} class.
+
+<<eval=FALSE>>=
+plot(obj, ylab="treatment effect (odds ratio)")
+@ 
+
+The shaded region of Figure~\ref{pr-plot} denotes the 95\% confidence region for the overall treatment effect. Thus, the plot can give an idea about heterogeneity as a function of baseline prognosis, as determined by the candidate prognostic treatment-response factors.
+
+
+\begin{figure}\centering
+\includegraphics[width=5in]{prplot.pdf}
+\caption{PR-plot}
+\label{pr-plot}
+\end{figure}
+
+
+\subsection*{Forest plot}
+
+We can also create a more traditional plot of subgroup effects using the function \texttt{forest}. All of the factors included must be categorical, so we first create categorical representations of the continuous variables. Because all of the continuous variables have been centered and scaled, a value greater than zero corresponds to an individual that has a greater than average value for the specified variable.
+
+<<eval=FALSE>>=
+simsolvd$age.cat <- factor(simsolvd$age>0)
+simsolvd$beat.cat <- factor(simsolvd$beat>0)
+simsolvd$lvef.cat <- factor(simsolvd$lvef>0)
+simsolvd$sodium.cat <- factor(simsolvd$sodium>0)
+  
+obj <- anoint(event~(age.cat+beat.cat+lvef.cat+cardratio+sodium.cat)*trt,
+                 family = "binomial", data = simsolvd)
+
+forest(obj)
+@ 
+
+The result is a forest plot that shows the treatment effect estimate within each of the subgroups defined by the set of candidate prognostic treatment-response factors (Figure~\ref{forest}). The default settings also include the number of treated and control subjects in each subgroup and the p-value for the univariate test of interaction, based on the likelihood ratio statistic. Additional arguments can be supplied to modify the plot labeling and the number of terms included.
+
+\begin{figure}\centering
+\includegraphics[width=5in]{forest.pdf}
+\caption{Forest plot of \texttt{anoint} object.}
+\label{forest}
+\end{figure}
+
+
+
+\subsection*{Global tests of effect modification}
+
+Several tests for the presence of effect modification among the candidate treatment-response factors are provided by the \texttt{anoint} package. These include tests based on one-by-one (OBO), unrestricted interactions (UIM), and proportional interactions (PIM) models of treatment-covariate interaction. OBO tests each prognostic factor one-at-a-time in a model of treatment, prognostic factor, and interaction effects. Thus, each model in the OBO is univariate with respect to treatment-covariate interaction. The UIM is a full regression model with all main effects and pairwise treatment-covariate interactions. The PIM is a proportional interactions model and is fit with either an exact or approximate method. 
+
+Likelihood ratio tests for any interaction (any proportional interaction in the case of PIM) is provided with the \texttt{anoint.fit} function. This includes one-stage tests for each method and two-stage tests which have the exact PIM global test at the first stage and, if no evidence of proportional interactions is found, OBO or UIM at the second stage. For the two-stage testing, each stage uses a one-half of the global $\alpha$, which is specified by the \texttt{level} option.
+
+In what follows, we obtain an \texttt{anoint.fit} object at the 5\% global level of significance. The \texttt{summary} method gives a matrix with logical indicators for whether a given method rejected the null hypothesis of no interaction. Note that for PIM, the null is no \emph{proportional} interaction. Thus, if the null is not rejected with the PIM test, it does not exclude the possibility that non-proportional interaction is present.
+
+
+<<>>=
+obj <- anoint(event~(age+beat+lvef+cardratio+sodium)*trt,
+                 family = "binomial", data = simsolvd)
+
+fit <- anoint.fit(obj, level=.05)
+
+summary(fit)
+@ 
+
+The \texttt{summary} method also reports each likelihood-ratio test p-value. The global test is based on the maximum LRT among the univariate tests for OBO. When corrected for multiplicity using a Bonferroni correction, this is compared to the $\chi^2(1)$ at level $\alpha/K$, where $K$ is the number of univariate tests. The p-value for UIM is for the LRT comparing a model with all pairwise treatment-covariate interactions, to a model with only main effects. The PIM models are one degree of freedom tests of the responsiveness parameter $\theta$. 
+
+\subsection*{Model fits}
+
+Any of the \texttt{anoint} models can be extracted using the function \texttt{fits} and indicating the \texttt{type} (any one or more of `obo', `uim', `pim.exact', `pim.approx').
+
+<<>>=
+pim.fit <- fits(fit, type = "pim.exact")
+
+pim.fit
+@ 
+
+This is a list with an object of class `pim'. Each type of model has the standard set of methods including: \texttt{print}, \texttt{summary}, \texttt{coef}, \texttt{vcov}, \texttt{predict}, and \texttt{confint}. For example, if we were interested in the confidence intervals for the intercept in the control group and for the \texttt{sodium} term of the exact PIM, we could obtain them with the \texttt{confint} method.
+
+<<>>=
+confint(pim.fit$pim.exact,parm=c("Control","sodium"))
+@ 
+
+In the above, the default variance-covariance for the model terms regards the responsiveness parameter as fixed. This could underestimate the standard error. As an alternative, the variance-covariance can be estimated using bootstrap resampling with the \texttt{n.boot} option set to some positive integer in the \texttt{pim} call. An example of this is provided in the next section. 
+
+\subsection*{Direct fitting with \texttt{anoint} object}
+
+We could also obtain any fit directly from the \texttt{anoint.object}. For example, to fit the one-by-one regression models:
+
+<<>>=
+obo.fit <- obo(obj) # A list of fits
+
+obo.fit$fit
+@ 
+
+The \texttt{obo} function, like all of the \texttt{anoint} models, returns a list with the fitted model \texttt{fit}, the likelihood ratio test statistics for each univariate test of interaction, and the corresponding unadjusted pvalue.
+
+Here is an example of fitting the UIM.
+
+<<>>=
+uim.fit <- uim(obj)
+summary(uim.fit$fit)
+uim.fit$LRT
+uim.fit$pvalue
+@ 
+
+In the following, we fit an exact PIM and specify that a bootstrap estimate of the variance-covariance for all model terms be taken using 100 resamples.
+
+<<>>=
+pim.fit <- pim(obj, n.boot = 100)
+summary(pim.fit)
+@ 
+
+\subsection*{References}
+
+Follmann DA, Proschan MA. A multivariate test of interaction for use in clinical trials. \emph{Biometrics} 1999; 55(4):1151-1155 \\
+
+Yusuf, S. et al. Effect of Enalapril on Survival in Patients with Reduced Left-Ventricular Ejection Fractions and Congestive-Heart-Failure. \emph{NEJM} 1991; 325:293-302.
+
+
+\end{document}

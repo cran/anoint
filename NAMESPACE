@@ -1,0 +1,5 @@
+export(anoint,pim,anoint.formula,forest,data.anoint,anoint.fit,uim,obo)
+exportClasses(anoint,pim,formula.anoint,anoint.fit)
+importFrom("graphics", plot)
+importFrom("stats",coef,confint,vcov,predict,update)
+exportMethods(show,coef,vcov,plot,predict,confint,fits)
