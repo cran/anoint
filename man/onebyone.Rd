@@ -5,7 +5,7 @@
 
 \description{
 
-Fits GLM of Cox regression analysis for all pairwise interactions between treatment and covariate specified in \code{anoint} object.
+Fits GLM of Cox regression models with a treatment-covariate interaction separately for each covariate specified in \code{anoint} object.
 }
 
 \usage{

@@ -28,7 +28,7 @@ test.table
 	
 setMethod("print","anoint.fit",function(x,...) print(anointfit.table(x)))
 
-setMethod("show","anoint.fit",function(object) anointfit.print(object))
+setMethod("show","anoint.fit",function(object) print(anointfit.table(object)))
 
 anointfit.summary <- function(object,...){
 	

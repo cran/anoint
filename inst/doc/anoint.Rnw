@@ -10,6 +10,7 @@
 \title{Vignette for the \texttt{anoint} package}
 
 \begin{document}
+\SweaveOpts{concordance=TRUE}
 
 \maketitle
 
@@ -26,6 +27,7 @@ The fundamental object of the package is an \texttt{anoint} object. This is what
 In the following, we create an \texttt{anoint} object for the mock SOLVD-T data, specifying age, pulse, lower ejection fraction, cardiothoracic ratio, and sodium as prognostic factors. The regression model for all the \texttt{anoint} regression methods will be a logistic model on the outcome of time to hospitalization or death within two years of study entry.
 
 <<>>=
+set.seed(10101)
 library(anoint)
 data(simsolvd)
 
@@ -41,19 +43,34 @@ The option family can be any one of the canonical models in the GLM family or a 
 
 \subsubsection*{Model-based prognostic selection}
 
-If we were uncertain whether all of the factors were prognostic, we could perform a prognostic selection step prior to any interaction testing. When the \texttt{anoint} option \texttt{select} is set to \texttt{TRUE}, a lasso variable selection is performed on the control data in order to identify factors that have a marginal influence on the outcome. The default settings use a ten-fold cross-validation to estimate the penalty parameter $\lambda$.
+If we were uncertain whether all of the factors were prognostic, we could perform a prognostic selection step prior to any interaction testing. When the \texttt{anoint} option \texttt{select} is set to either `glmnet' or `stepAIC'. When the \texttt{glmnet} method is selected, a lasso variable selection is performed on the control data in order to identify factors that have a marginal influence on the outcome. The default settings use a ten-fold cross-validation to estimate the penalty parameter $\lambda$. When \texttt{stepAIC} is selected, a stepwise selection procedure is used and the best model is chosen so as to minimize the AIC.
 
-For example, suppose we were uncertain about the importance of the variables \texttt{noise} and \texttt{sodium}. We could require all variables known to be prognostic to be selected by setting their penalty factor in the lasso \texttt{glmnet} call to zero.
+As an illustration of the use of these methods, suppose we were uncertain about the importance of the variables \texttt{noise}, a randomly generated variable, \texttt{sodium}, \texttt{cardratio}, and \texttt{lvef}. Using the lasso, we can force the known prognostic factors \texttt{age} and \texttt{beat} into the model with the \texttt{keep.vars} argument. This sets the \texttt{penalty.factor} in the lasso \texttt{glmnet} so that these variables must be retained.
 
 <<>>=
+simsolvd$noise <- runif(nrow(simsolvd))
+  
 obj <- anoint(event~(age+beat+lvef+cardratio+sodium+noise)*trt,
-                 family = "binomial", data = simsolvd, select=TRUE,
-                 penalty.factor=c(rep(0,5),1,1))
+                 family = "binomial", data = simsolvd, select="glmnet",
+                 keep.vars=c("age","beat"))
 
 obj
 @ 
 
-Note that the first term of the \texttt{penalty.factor} vector is always an intercept for GLM and Cox models. In this case, \texttt{noise} was dropped from the set of prognostic factors based on the empirical evidence in the control group.
+Note that an intercept variable is always retained in GLM models. In this example, \texttt{noise} was dropped from the set of prognostic factors based on the empirical evidence in the control group.
+
+To place the same restriction with the `stepAIC' selection method, we can specify the lower and upper models with the scope argument of \texttt{stepAIC}.
+
+<<>>=
+thescope <- list(lower=event~(age+beat),
+                 event~(age+beat+lvef+cardratio+sodium+noise))
+
+obj <- anoint(event~(age+beat+lvef+cardratio+sodium+noise)*trt,
+                 family = "binomial", data = simsolvd, select="stepAIC",
+                 scope=thescope)
+
+obj
+@
 
 \subsection*{PR-plot}
 

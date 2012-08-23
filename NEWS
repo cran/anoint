@@ -1,0 +1,15 @@
+NEWS file for R project ANOINT
+
+Version 1.1
+
+The package formerly named mim has been renamed ANOINT for analysis of interactions. 
+
+Version 1.1 has packaged the methods from the previous versions into a class anoint and anoint.fit. The anoint class holds the information about the model fit formula, candidate treatment-response factor (interaction terms), and the results of the selection procedure, if requested. The anoint.fit class performs all of the ANOINT methods (one-by-one, unrestricted interaction model, and proportional interaction) and provides methods to inspect and summary their results. 
+
+Version 1.2
+
+Included seeding in vignette.
+
+Corrected error in additional intercept in select.glmnet. Added stepAIC selection and changed select argument to taking character specifying type of selection method.
+
+Added na.action to anoint.

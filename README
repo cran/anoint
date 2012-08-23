@@ -1,0 +1,7 @@
+README file for R project ANOINT
+
+ANOINT is a collection of R tools that were created to help trialists evaluate effect modification with data from a single clinical trial, when it is hypothesized that multiple factors could influence responsiveness to treatment. The package performs a number of testing procedures for the presence of any effect modification among a set of candidate treatment response factors. The methods are applicable to glm or Cox proportional hazards models. The tools allow for a lasso selection procedure for prognostic factors, prior to the assessment of effect modification, which is conducted on the control data only.
+
+One of the models in the ANOINT methods is a proportional interactions model. This is a generalized version of Tukey's 1-df model which was first described by Follmann and Proschan. It is a special case of multiple interaction which supposes that the effect modification is proportional (a constant multiple) of prognostic effects. This model has been under-utilized in assessments of treatment-covariate interactions in a clinical trial.
+
+Plotting methods include a standard forest plot for each of the candidate treatment response factors and a diagnostic plot for proportional interaction.

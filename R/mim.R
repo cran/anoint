@@ -7,18 +7,30 @@ setClass("anoint",
 ))
 
 
-anoint <- function(formula,data,family="binomial",select=FALSE,nfolds=10,type.measure="deviance",...){
-	
+anoint <- function(formula,data,family="binomial",select=NULL,nfolds=10,type.measure="deviance",keep.vars=NULL,na.action=na.omit,...){
+
+    data <- na.action(data[,all.vars(formula)]) # APPLY NA.ACTION
 	f.anoint <- anoint.formula(formula,family=family)
 	trt.index <- which(names(data)==f.anoint@trt)
-	
-	if(select){
-		cat("Performing selection procedure for prognostic model...\n")
-		update.formula <- select.glmnet(f.anoint,trt.index,data,family,nfolds=nfolds,type.measure=type.measure,...)
+          
+	if(!is.null(select)){
+		if(select=="stepAIC"){
+			cat("Performing selection procedure for prognostic model...\n")
+			update.formula <- select.stepAIC(f.anoint,trt.index,data,family,...)
+		}
+		else if(select=="glmnet"){
+			cat("Performing selection procedure for prognostic model...\n")
+			update.formula <- select.glmnet(f.anoint,trt.index,data,family,nfolds=nfolds,type.measure=type.measure,keep=keep.vars,...)
+		}		
+		else{
+			stop("Selection method not recognized.")
+		}
+		if(length(grep("trt",update.formula))>0)
+			update.formula <- update.formula[-length(update.formula)]
 		update.formula <- paste(update.formula,sep="",collapse="+")
 		formula <- paste(as.character(formula)[2],"~",
-			paste("(",update.formula,")*",f.anoint@trt,sep="",collapse=""),collapse="")
-		cat("Selected MIM:\n\n")
+		paste("(",update.formula,")*",f.anoint@trt,sep="",collapse=""),collapse="")
+		cat("Selected MIM:\n")
 		formula <- formula(formula)
 		print(formula,showEnv=FALSE)
 		}
@@ -27,7 +39,7 @@ anoint <- function(formula,data,family="binomial",select=FALSE,nfolds=10,type.me
 		formula = anoint.formula(formula,family=family),
 		trt.index = trt.index,
 		data = data,
-		select = select
+		select = !is.null(select)
 	)
 }
 
