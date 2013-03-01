@@ -2,15 +2,6 @@ forest <- function(object,terms=NULL,x.axis = NULL,
 									 labels = NULL,
 									 fun=exp,...){
 	
-# DEPENDENT FUNCTION
-factor.check <- function(var, data){
-	
-	is.a.factor <- sapply(var,function(x)is.factor(data[,x]))
-	is.categorical <- sapply(var,function(x)length(unique(data[,x]))<10)
-	
-ifelse(!is.a.factor,is.categorical,is.a.factor)
-	
-}
 
 tapply.mi <- function(formula, data, index, family,...){
 	
@@ -59,8 +50,14 @@ est.table
 
 	if(!is.null(terms)) subgroups <- subgroups[terms]
 	
-	any.continuous <- factor.check(subgroups, data)
-	if(any(!any.continuous)) stop("Variables must be a factor or have fewer than 10 groups.")
+	any.factor <- sapply(subgroups, function(x) is.factor(data[,x]))
+	
+	for(i in 1:length(any.factor)){
+		if(!any.factor[i]){
+			data[,subgroups[i]] <- factor(data[,subgroups[i]])
+			warning(paste("Converting",subgroups[i],"to factor."))
+		}
+	}
 
 	formulas <- sapply(subgroups,function(var){
 		as.formula(paste(response,"~",var,"*",trt))	
@@ -121,7 +118,7 @@ est.table
 	if(is.null(x.axis)) x.axis <- round(seq(min(onebyone.mat),
 											max(onebyone.mat),length=8),2)
 	
-	if(is.null(labels)){
+	if(is.null(labels)) labels <- subgroups
 		
 		n.trt <- sapply(subgroups,function(x)table(data[,x],data[,trt])[,2])
 		n.trt <- unlist(n.trt)
@@ -132,13 +129,13 @@ est.table
 		n.ctrl <- c(n.ctrl,table(data[,trt])[1])
 				
 		var.names <- rep("",nrow(onebyone.mat))
-		var.names[label.index] <- subgroups
+		var.names[label.index] <- labels
 		var.names[reference.row] <- "Overall"
 		labels <- cbind(var.names,row.names(onebyone.mat),n.trt,n.ctrl)
 		labels <- cbind(labels,cbind(str.pvalues))
 		colnames(labels)[ncol(labels)] <- "P-value"
 		colnames(labels)[1:4] <- c("Factor","Group"," Trt","Ctrl")
-	}
+
 	
 	forestplot(onebyone.mat, group.index, reference.row,
 					labels = labels,

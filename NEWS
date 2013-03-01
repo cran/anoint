@@ -13,3 +13,11 @@ Included seeding in vignette.
 Corrected error in additional intercept in select.glmnet. Added stepAIC selection and changed select argument to taking character specifying type of selection method.
 
 Added na.action to anoint.
+
+Version 1.3
+
+Added pim.subsets function.
+
+Revised forestplot labels and handling of factors.
+
+Added forest.subsets for plotting best subsets.

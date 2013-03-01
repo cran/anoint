@@ -3,7 +3,7 @@
 
 \docType{package}
 \title{
-Analysis of interactions for GLM or Cox PH regression models.
+Analysis of interactions for generalized linear models (GLM) or Cox proportional hazards regression models.
 }
 \description{
 Testing procedures and models for investigating the heterogeneity of treatment effect in a clinical trial with multiple baseline covariates.
@@ -12,8 +12,8 @@ Testing procedures and models for investigating the heterogeneity of treatment e
 \tabular{ll}{
 Package: \tab anoint\cr
 Type: \tab Package\cr
-Version: \tab 1.0\cr
-Date: \tab 2012-04-22\cr
+Version: \tab 1.3\cr
+Date: \tab 2013-3-01\cr
 License: \tab GPL
 }
 }

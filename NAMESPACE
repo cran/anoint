@@ -1,4 +1,4 @@
-export(anoint,pim,anoint.formula,forest,data.anoint,anoint.fit,uim,obo)
+export(anoint,pim,anoint.formula,forest,data.anoint,anoint.fit,uim,obo,pim.subsets,pim.fit,forest.subsets,anoint.subgroups)
 exportClasses(anoint,pim,formula.anoint,anoint.fit)
 importFrom("graphics", plot)
 importFrom("stats",coef,confint,vcov,predict,update)
