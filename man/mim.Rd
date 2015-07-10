@@ -11,7 +11,8 @@ Prepares formula and data to be used in methods with the analysis of interaction
 }
 
 \usage{
-anoint(formula,data,family="binomial",select=NULL,nfolds=10,type.measure="deviance",keep.vars=NULL,na.action=na.omit,...)
+anoint(formula,data,family="binomial",select=NULL,nfolds=10,
+  type.measure="deviance",keep.vars=NULL,na.action=na.omit,...)
 }
 
 \arguments{

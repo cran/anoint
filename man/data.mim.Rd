@@ -9,7 +9,8 @@
   }
 
 \usage{
-data.anoint(alpha, beta, gamma, mean, vcov, n=100, event=.8, type = c("binomial","survival"))
+data.anoint(alpha, beta, gamma, mean, vcov, n=100, event=.8,
+type = c("binomial","survival"))
 }
 
 \arguments{

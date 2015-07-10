@@ -12,8 +12,8 @@ Testing procedures and models for investigating the heterogeneity of treatment e
 \tabular{ll}{
 Package: \tab anoint\cr
 Type: \tab Package\cr
-Version: \tab 1.3\cr
-Date: \tab 2013-3-01\cr
+Version: \tab 1.4\cr
+Date: \tab 2015-7-10\cr
 License: \tab GPL
 }
 }

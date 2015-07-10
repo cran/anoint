@@ -10,7 +10,7 @@ Fits a single proportional interactions model for generalized linear or Cox regr
 }
 
 \usage{
-pim.fit(formula,trt,data,family="binomial",na.action=na.omit,...)
+pim.fit(formula, trt, data, family="binomial", na.action=na.omit, ...)
 }
 
 \arguments{
