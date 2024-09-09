@@ -5,3 +5,6 @@ ANOINT is a collection of R tools that were created to help trialists evaluate e
 One of the models in the ANOINT methods is a proportional interactions model. This is a generalized version of Tukey's 1-df model which was first described by Follmann and Proschan. It is a special case of multiple interaction which supposes that the effect modification is proportional (a constant multiple) of prognostic effects. This model has been under-utilized in assessments of treatment-covariate interactions in a clinical trial.
 
 Plotting methods include a standard forest plot for each of the candidate treatment response factors and a diagnostic plot for proportional interaction.
+
+For more details, see the paper: 
+Kovalchik SA, Varadhan R, Weiss CO. Assessing heterogeneity of treatment effect in a clinical trial with the proportional interactions model. Stat Med. 2013 Dec 10;32(28):4906-23. doi: 10.1002/sim.5881. Epub 2013 Jun 21. PMID: 23788362.

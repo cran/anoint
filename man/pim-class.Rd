@@ -14,7 +14,7 @@ Objects can be created by calls of the form \code{new("pim", ...)}.
 
 \section{Slots}{
   \describe{
-      \item{\code{formula}:}{object of code{anoint} class}
+      \item{\code{formula}:}{object of \code{anoint} class}
       \item{\code{coef}:}{list of baseline (alpha), control prognostic effects (beta), and responsiveness parameter (theta)}
       \item{\code{exact}:}{logical indicator whether \code{exact} fit used}
       \item{\code{LRT}:}{likelihood ratio test statistic of responsiveness parameter}

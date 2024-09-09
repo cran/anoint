@@ -3,7 +3,7 @@ pim.fit <- function(formula, trt, data, family="binomial", na.action=na.omit,...
 		if(missing(trt))
 			stop("Must indicate the treatment variable.")
 			
-		if(class(trt)!="character")
+    if(!inherits(trt, "character"))
 			stop("Treatment argument must be the character name of the treatment group variable.")
 
 		data <- na.action(data[,unique(c(all.vars(formula), trt))]) # APPLY NA.ACTION

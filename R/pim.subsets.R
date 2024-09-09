@@ -136,7 +136,7 @@ pim.subsets <- function(formula, trt, data, family="binomial", na.action=na.omit
 		if(missing(trt))
 			stop("Must indicate the treatment variable.")
 			
-		if(class(trt)!="character")
+    if(!inherits(trt, "character"))
 			stop("Treatment argument must be the character name of the treatment group variable.")
 			
 		data <- na.action(data[,unique(c(all.vars(formula), trt))]) # APPLY NA.ACTION
@@ -180,7 +180,7 @@ anoint.subgroups <- function(formula, trt, data, family="binomial", na.action=na
 		if(missing(trt))
 			stop("Must indicate the treatment variable.")
 			
-		if(class(trt)!="character")
+    if(!inherits(trt, "character"))
 			stop("Treatment argument must be the character name of the treatment group variable.")
 			
 		covariates <- all.vars(update(formula,NULL~.))
@@ -217,7 +217,7 @@ anoint.subgroups <- function(formula, trt, data, family="binomial", na.action=na
 	o <- order(subgroup.lrts, decreasing=TRUE)	# SORT BY LARGEST LRT
 	result <- result[o,]
 
-	print(result)
+	#print(result)
 
 	result <- as.list(result)
 	result$include.exclude.matrix <- include.exclude.matrix[o,]
@@ -232,7 +232,7 @@ pim.subsets <- function(formula, trt, data, family="binomial", na.action=na.omit
 		if(missing(trt))
 			stop("Must indicate the treatment variable.")
 			
-		if(class(trt)!="character")
+    if(!inherits(trt, "character"))
 			stop("Treatment argument must be the character name of the treatment group variable.")
 			
 		covariates <- all.vars(update(formula,NULL~.))
@@ -306,7 +306,7 @@ fitter <- function(formula, control, treatment, family){
 	o <- order(1-result$reject, result$LRT,decreasing=FALSE) # SELECT LOWEST LRT OF SELECTED
 	result <- result[o,]	 # SORT
 	
-	print(result)
+	#print(result)
 	
 	result <- list(
 	    subset = result$subset,

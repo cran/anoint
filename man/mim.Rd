@@ -20,8 +20,8 @@ anoint(formula,data,family="binomial",select=NULL,nfolds=10,
   \item{data}{data.frame containing the variables of \code{formula}}
   \item{family}{character specifying family of \code{glm} or character "coxph" if \code{coxph} model is fit}
   \item{select}{character for type of selection to perform, either "\code{stepAIC}" or "\code{glmnet}".} 
-  \item{nfolds}{number of folds used in cross-validation to find lasso penalty parameter when \code{select} is set to \code{TRUE}. Used only when \code{select} is \code{glmnet}. See \link{cv.glmnet}}
-  \item{type.measure}{loss to use for cross-validation. Used only when \code{select} is \code{glmnet}. See \link{cv.glmnet}}
+  \item{nfolds}{number of folds used in cross-validation to find lasso penalty parameter when \code{select} is set to \code{TRUE}. Used only when \code{select} is \code{glmnet}. See \link[glmnet]{cv.glmnet}}
+  \item{type.measure}{loss to use for cross-validation. Used only when \code{select} is \code{glmnet}. See \link[glmnet]{cv.glmnet}}
   \item{keep.vars}{vector of names of variables to retain if selection procedure is used. Used only when \code{select} is \code{glmnet}.}
   \item{na.action}{function, \link{na.action} to perform for handling observations with missing variables among variables in formula. Default is \code{na.omit}}
   \item{...}{additional arguments passed to \code{cv.glmnet} when \code{select} is \code{glmnet} or \code{stepAIC} when \code{select} is \code{stepAIC}.}
@@ -36,12 +36,12 @@ To test proportional multiple interactions between treatment variable indicator 
 
 Factors should not be included as \code{a} or \code{b} because this could change how the reference group is represented in the model. Separate 0/1 dummy variables must be supplied by the user. 
 
-When \code{select} is \code{glmnet} a Lasso method (\code{cv.glmnet}) is used to select prognostic factors using 10-fold cross-validation with the control data only. If \code{select} is set to \link{stepAIC} a stepwise selection procedure is used with specifications based on arguments passed to \code{...}.
+When \code{select} is \code{glmnet} a Lasso method (\code{cv.glmnet}) is used to select prognostic factors using 10-fold cross-validation with the control data only. If \code{select} is set to \link[MASS]{stepAIC} a stepwise selection procedure is used with specifications based on arguments passed to \code{...}.
 }
 
 \author{Stephanie Kovalchik <s.a.kovalchik@gmail.com>}
 
-\seealso{\link{data.anoint},\link{cv.glmnet}}
+\seealso{\link{data.anoint},\link[glmnet]{cv.glmnet}}
 
 \references{
 Follmann DA, Proschan MA. A multivariate test of interaction for use in clinical trials. \emph{Biometrics} 1999; 55(4):1151-1155

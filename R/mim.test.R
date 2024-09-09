@@ -6,7 +6,7 @@ anoint.fit <- function(object,level=.05,interval=c(.5,3)){
 	PIM.APPROX <- pim(object,exact=FALSE)
 	
 	#NUMBER ONE-BY-ONE
-	K <- length(OBO$fit)
+	K <- length(OBO$fit) 
 	
 	#GLOBAL CRITERIA
 	X2.95 <- qchisq((1-level),df=1)
@@ -61,8 +61,8 @@ anoint.fit <- function(object,level=.05,interval=c(.5,3)){
 		),
 		fits=list(
 			obo = OBO,
-			uim = UIM,
-			pim.exact = PIM.EXACT,
+			uim = UIM,     
+			pim.exact = PIM.EXACT,        
 			pim.approx = PIM.APPROX
 		)
 	)

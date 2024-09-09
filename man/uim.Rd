@@ -24,7 +24,7 @@ List of model fit of \code{glm} or \code{coxph} class (\code{fit}), likelihood-r
 
 \author{Stephanie Kovalchik <s.a.kovalchik@gmail.com>}
 
-\seealso{\link{glm},\link{coxph},\link{anoint}}
+\seealso{\link{glm},\link[survival]{coxph},\link{anoint}}
 
 \examples{
 data(simsolvd)

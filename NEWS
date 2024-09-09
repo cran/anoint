@@ -1,35 +1,26 @@
-NEWS file for R project ANOINT
+# NEWS for ANOINT
 
 Version 1.1
-
-The package formerly named mim has been renamed ANOINT for analysis of interactions. 
-
-Version 1.1 has packaged the methods from the previous versions into a class anoint and anoint.fit. The anoint class holds the information about the model fit formula, candidate treatment-response factor (interaction terms), and the results of the selection procedure, if requested. The anoint.fit class performs all of the ANOINT methods (one-by-one, unrestricted interaction model, and proportional interaction) and provides methods to inspect and summary their results. 
-
-
-———————————————————————————
+- The package formerly named mim has been renamed ANOINT for analysis of interactions. 
+- Packaged the methods from the previous versions into a class anoint and anoint.fit. 
+- The anoint class holds the information about the model fit formula, candidate treatment-response factor (interaction terms), and the results of the selection procedure, if requested. 
+- The anoint.fit class performs all of the ANOINT methods (one-by-one, unrestricted interaction model, and   proportional interaction) and provides methods to inspect and summary their results. 
 
 Version 1.2
-
-Included seeding in vignette.
-
-Corrected error in additional intercept in select.glmnet. Added stepAIC selection and changed select argument to taking character specifying type of selection method.
-
-Added na.action to anoint.
-
-
-———————————————————————————
+- Included seeding in vignette.
+- Corrected error in additional intercept in select.glmnet. Added stepAIC selection and changed select argument to taking character specifying type of selection method.
+- Added na.action to anoint.
 
 Version 1.3
-
-Added pim.subsets function.
-
-Revised forestplot labels and handling of factors.
-
-Added forest.subsets for plotting best subsets.
-
-———————————————————————————
+- Added pim.subsets function.
+- Revised forestplot labels and handling of factors.
+- Added forest.subsets for plotting best subsets.
 
 Version 1.4
+- Removed old vignette
 
-Removed old vignette
+Version 1.5
+- Fixed the issues that caused the package to be archived
+- Made show() function generic to resolve errors caused by its non-generic implementation.
+- Fixed issues related to package dependencies.
+- Added parameter type to summary() function
